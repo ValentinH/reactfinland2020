@@ -1,6 +1,6 @@
 import { FORM_ERROR } from 'final-form'
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export default async function onSubmit(values) {
   await sleep(100)

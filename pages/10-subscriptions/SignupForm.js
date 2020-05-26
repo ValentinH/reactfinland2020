@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Field } from 'react-final-form'
+import { Form, Field, FormSpy } from 'react-final-form'
 import validate from './validate'
 import RenderCount from './RenderCount'
 import onSubmit from '../../common/onSubmit'
@@ -13,8 +13,8 @@ import onSubmit from '../../common/onSubmit'
  */
 export default function SignupForm() {
   return (
-    <Form onSubmit={onSubmit} validate={validate}>
-      {({ handleSubmit, values, submitting }) => (
+    <Form onSubmit={onSubmit} validate={validate} subscription={{ valid: true, submitting: true }}>
+      {({ handleSubmit, submitting }) => (
         <form onSubmit={handleSubmit}>
           <RenderCount />
           <Field name="firstName">
@@ -22,12 +22,7 @@ export default function SignupForm() {
               <div>
                 <RenderCount />
                 <label htmlFor="firstName">First Name</label>
-                <input
-                  {...input}
-                  id="firstName"
-                  type="text"
-                  placeholder="First Name"
-                />
+                <input {...input} id="firstName" type="text" placeholder="First Name" />
                 {meta.error && meta.touched && <span>{meta.error}</span>}
               </div>
             )}
@@ -37,12 +32,7 @@ export default function SignupForm() {
               <div>
                 <RenderCount />
                 <label htmlFor="lastName">Last Name</label>
-                <input
-                  {...input}
-                  id="lastName"
-                  type="text"
-                  placeholder="Last Name"
-                />
+                <input {...input} id="lastName" type="text" placeholder="Last Name" />
                 {meta.error && meta.touched && <span>{meta.error}</span>}
               </div>
             )}
@@ -60,10 +50,14 @@ export default function SignupForm() {
           <button type="submit" disabled={submitting}>
             Submit
           </button>
-          <pre>
-            <RenderCount />
-            {JSON.stringify(values, undefined, 2)}
-          </pre>
+          <FormSpy>
+            {({ values }) => (
+              <pre>
+                <RenderCount />
+                {JSON.stringify(values, undefined, 2)}
+              </pre>
+            )}
+          </FormSpy>
         </form>
       )}
     </Form>

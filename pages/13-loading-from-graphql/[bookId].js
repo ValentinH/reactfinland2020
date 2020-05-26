@@ -6,24 +6,38 @@ import onSubmit from '../../common/onSubmit'
 import validate from './validate'
 import Link from 'next/link'
 
+const query = gql`
+  query($id: Int!) {
+    book(id: $id) {
+      id
+      title
+      year
+      author {
+        firstName
+        lastName
+      }
+    }
+  }
+`
+
 export default function BookForm({ bookId }) {
+  const { data } = useQuery(query, {
+    variables: {
+      id: bookId,
+    },
+  })
+  const book = data && data.book
   return (
     <div>
       <Link href="/13-loading-from-graphql">
         <a href="/13-loading-from-graphql">Back to list</a>
       </Link>
-      <Form onSubmit={onSubmit} validate={validate}>
+      <Form onSubmit={onSubmit} validate={validate} initialValues={book}>
         {({ handleSubmit }) => (
           <form onSubmit={handleSubmit} className="bookForm">
             <div>
               <label htmlFor="title">Title</label>
-              <Field
-                component="input"
-                type="text"
-                id="title"
-                name="title"
-                placeholder="Title"
-              />
+              <Field component="input" type="text" id="title" name="title" placeholder="Title" />
               <Error name="title" />
             </div>
             <div>
@@ -50,13 +64,7 @@ export default function BookForm({ bookId }) {
             </div>
             <div>
               <label htmlFor="year">Year</label>
-              <Field
-                component="input"
-                type="text"
-                id="year"
-                name="year"
-                placeholder="Year"
-              />
+              <Field component="input" type="text" id="year" name="year" placeholder="Year" />
               <Error name="year" />
             </div>
             <button type="submit">Submit</button>

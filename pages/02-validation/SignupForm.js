@@ -15,15 +15,30 @@ export default function SignupForm() {
   const [firstName, setFirstName] = React.useState('')
   const [lastName, setLastName] = React.useState('')
   const [email, setEmail] = React.useState('')
+
+  const [touchedState, setTouchedState] = React.useState({
+    firstName: false,
+    lastName: false,
+    email: false,
+  })
+
+  const validation = {
+    firstName: !!firstName,
+    lastName: !!lastName,
+    email: !!email && isEmail(email),
+  }
+
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault()
-        onSubmit({
-          firstName,
-          lastName,
-          email,
-        })
+        if (Object.values(validation).every((v) => !!v)) {
+          onSubmit({
+            firstName,
+            lastName,
+            email,
+          })
+        }
       }}
     >
       <div>
@@ -35,10 +50,11 @@ export default function SignupForm() {
           placeholder="First Name"
           value={firstName}
           onChange={(event) => setFirstName(event.target.value)}
+          onBlur={(event) => {
+            setTouchedState((s) => ({ ...s, firstName: true }))
+          }}
         />
-        <span>
-          Errors go in <code>&lt;span&gt;</code>'s
-        </span>
+        {touchedState.firstName && !validation.firstName && <span>First name is required</span>}
       </div>
       <div>
         <label htmlFor="lastName">Last Name</label>
@@ -49,7 +65,11 @@ export default function SignupForm() {
           placeholder="Last Name"
           value={lastName}
           onChange={(event) => setLastName(event.target.value)}
+          onBlur={(event) => {
+            setTouchedState((s) => ({ ...s, lastName: true }))
+          }}
         />
+        {touchedState.lastName && !validation.lastName && <span>Last name is required</span>}
       </div>
       <div>
         <label htmlFor="email">Email</label>
@@ -60,7 +80,11 @@ export default function SignupForm() {
           placeholder="Email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
+          onBlur={(event) => {
+            setTouchedState((s) => ({ ...s, email: true }))
+          }}
         />
+        {touchedState.email && !validation.email && <span>Email is not valid</span>}
       </div>
       <button type="submit">Submit</button>
     </form>

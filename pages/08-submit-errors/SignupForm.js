@@ -27,23 +27,20 @@ export default function SignupForm() {
         return errors
       }}
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, submitError }) => (
         <form onSubmit={handleSubmit}>
           <p>
-            Username <code>"erikras"</code> will fail, and any secret other than{' '}
-            <code>"42"</code> will also fail.
+            Username <code>"erikras"</code> will fail, and any secret other than <code>"42"</code>{' '}
+            will also fail.
           </p>
           <Field name="username">
             {({ input, meta }) => (
               <div>
                 <label htmlFor="username">Username</label>
-                <input
-                  {...input}
-                  id="username"
-                  type="text"
-                  placeholder="Username"
-                />
-                {meta.error && meta.touched && <span>{meta.error}</span>}
+                <input {...input} id="username" type="text" placeholder="Username" />
+                {meta.touched &&
+                  ((meta.error && <span>{meta.error}</span>) ||
+                    (meta.submitError && <span>{meta.submitError}</span>))}
               </div>
             )}
           </Field>
@@ -51,18 +48,13 @@ export default function SignupForm() {
             {({ input, meta }) => (
               <div>
                 <label htmlFor="secret">Secret</label>
-                <input
-                  {...input}
-                  id="secret"
-                  type="password"
-                  placeholder="Secret"
-                />
+                <input {...input} id="secret" type="password" placeholder="Secret" />
                 {meta.error && meta.touched && <span>{meta.error}</span>}
               </div>
             )}
           </Field>
 
-          {/* <div className="error">Form wide error goes here</div> */}
+          {submitError && <div className="error">{submitError}</div>}
 
           <button type="submit">Submit</button>
         </form>

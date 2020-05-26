@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form } from 'react-final-form'
+import { Form, Field, useField } from 'react-final-form'
 import validate from './validate'
 import {
   Paper,
@@ -13,10 +13,23 @@ import {
   MenuItem,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   Select,
   TextField,
 } from '@material-ui/core'
 import onSubmit from '../../common/onSubmit'
+
+const FinalTextField = ({ name, ...rest }) => {
+  const { input, meta } = useField(name)
+  return (
+    <TextField
+      {...input}
+      {...rest}
+      error={meta.touched && meta.error}
+      helperText={meta.touched && meta.error}
+    />
+  )
+}
 
 /**
  * Objective: Control this Material-UI form with React Final Form.
@@ -33,96 +46,92 @@ import onSubmit from '../../common/onSubmit'
  */
 export default function SignupForm() {
   return (
-    <Form
-      onSubmit={onSubmit}
-      validate={validate}
-      initialValues={{ tshirtColor: '#ff0000' }}
-    >
+    <Form onSubmit={onSubmit} validate={validate} initialValues={{ tshirtColor: '#ff0000' }}>
       {({ handleSubmit, submitting, values }) => (
         <form onSubmit={handleSubmit}>
           <Paper style={{ padding: 16, maxWidth: 500, margin: '20px auto' }}>
-            <Grid container alignItems="flex-start" spacing={20}>
+            <Grid container alignItems="flex-start" spacing={4}>
               <Grid item xs={12}>
-                <TextField
+                <FinalTextField
                   name="firstName"
-                  type="text"
                   label="First Name"
+                  id="firstName"
+                  type="text"
                   placeholder="First Name"
                   fullWidth
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <FinalTextField
                   name="lastName"
-                  type="text"
                   label="Last Name"
+                  id="lastName"
+                  type="text"
                   placeholder="Last Name"
                   fullWidth
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox name="tshirt" color="primary" fullWidth />}
-                  label="T-Shirt?"
-                />
+                <Field name="tshirt" label="T-Shirt?">
+                  {({ input, meta, label }) => (
+                    <FormControlLabel
+                      control={<Checkbox {...input} color="primary" />}
+                      label={label}
+                    />
+                  )}
+                </Field>
               </Grid>
               <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="tshirtSize">T-Shirt Size</InputLabel>
-                  <Select name="tshirtSize" fullWidth disabled={!values.tshirt}>
-                    <MenuItem value="xs">Extra Small</MenuItem>
-                    <MenuItem value="s">Small</MenuItem>
-                    <MenuItem value="m">Medium</MenuItem>
-                    <MenuItem value="l">Large</MenuItem>
-                    <MenuItem value="xl">Extra Large</MenuItem>
-                  </Select>
-                </FormControl>
+                <Field name="tshirtSize" label="T-Shirt Size" component="select">
+                  {({ input, meta, label }) => (
+                    <FormControl fullWidth error={meta.touched && meta.error}>
+                      <InputLabel htmlFor="tshirtSize">{label}</InputLabel>
+                      <Select {...input} fullWidth disabled={!values.tshirt}>
+                        <MenuItem value="xs">Extra Small</MenuItem>
+                        <MenuItem value="s">Small</MenuItem>
+                        <MenuItem value="m">Medium</MenuItem>
+                        <MenuItem value="l">Large</MenuItem>
+                        <MenuItem value="xl">Extra Large</MenuItem>
+                      </Select>
+                      <FormHelperText>{meta.touched && meta.error}</FormHelperText>
+                    </FormControl>
+                  )}
+                </Field>
               </Grid>
               <Grid item>
                 <FormControl component="fieldset">
                   <FormLabel component="legend">T-Shirt Color</FormLabel>
                   <RadioGroup row>
-                    <FormControlLabel
-                      label="Red"
-                      control={
-                        <Radio
-                          name="tshirtColor"
-                          value="#ff0000"
-                          disabled={!values.tshirt}
+                    <Field name="tshirtColor" label="Red" component="radio">
+                      {({ input, meta, label }) => (
+                        <FormControlLabel
+                          label={label}
+                          control={<Radio {...input} value="#ff0000" disabled={!values.tshirt} />}
                         />
-                      }
-                    />
-                    <FormControlLabel
-                      label="Green"
-                      control={
-                        <Radio
-                          name="tshirtColor"
-                          value="#00ff00"
-                          disabled={!values.tshirt}
+                      )}
+                    </Field>
+                    <Field name="tshirtColor" label="Green" component="radio">
+                      {({ input, meta, label }) => (
+                        <FormControlLabel
+                          label={label}
+                          control={<Radio {...input} value="#00ff00" disabled={!values.tshirt} />}
                         />
-                      }
-                    />
-                    <FormControlLabel
-                      label="Blue"
-                      control={
-                        <Radio
-                          name="tshirtColor"
-                          value="#0000ff"
-                          disabled={!values.tshirt}
+                      )}
+                    </Field>
+                    <Field name="tshirtColor" label="Blue" component="radio">
+                      {({ input, meta, label }) => (
+                        <FormControlLabel
+                          label={label}
+                          control={<Radio {...input} value="#0000ff" disabled={!values.tshirt} />}
                         />
-                      }
-                    />
+                      )}
+                    </Field>
                   </RadioGroup>
                 </FormControl>
               </Grid>
             </Grid>
             <Grid item style={{ marginTop: 16 }}>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                disabled={submitting}
-              >
+              <Button variant="contained" color="primary" type="submit" disabled={submitting}>
                 Submit
               </Button>
             </Grid>

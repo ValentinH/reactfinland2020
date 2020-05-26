@@ -14,55 +14,51 @@ import onSubmit from '../../common/onSubmit'
  */
 export default function SignupForm() {
   return (
-    <Form
-      onSubmit={onSubmit}
-      validate={(values) => {
-        const errors = {}
-        if (!values.firstName) {
-          errors.firstName = 'Required'
-        }
-        if (!values.lastName) {
-          errors.lastName = 'Required'
-        }
-        if (!values.email) {
-          errors.email = 'Required'
-        } else if (!isEmail(values.email)) {
-          errors.email = 'Invalid email'
-        }
-        return errors
-      }}
-    >
+    <Form onSubmit={onSubmit}>
       {({ handleSubmit }) => (
         <form onSubmit={handleSubmit}>
-          <Field name="firstName">
+          <Field
+            name="firstName"
+            validate={(value) => {
+              if (!value) {
+                return 'Required'
+              }
+            }}
+          >
             {({ input, meta }) => (
               <div>
                 <label htmlFor="firstName">First Name</label>
-                <input
-                  {...input}
-                  id="firstName"
-                  type="text"
-                  placeholder="First Name"
-                />
+                <input {...input} id="firstName" type="text" placeholder="First Name" />
                 {meta.error && meta.touched && <span>{meta.error}</span>}
               </div>
             )}
           </Field>
-          <Field name="lastName">
+          <Field
+            name="lastName"
+            validate={(value) => {
+              if (!value) {
+                return 'Required'
+              }
+            }}
+          >
             {({ input, meta }) => (
               <div>
                 <label htmlFor="lastName">Last Name</label>
-                <input
-                  {...input}
-                  id="lastName"
-                  type="text"
-                  placeholder="Last Name"
-                />
+                <input {...input} id="lastName" type="text" placeholder="Last Name" />
                 {meta.error && meta.touched && <span>{meta.error}</span>}
               </div>
             )}
           </Field>
-          <Field name="email">
+          <Field
+            name="email"
+            validate={(value) => {
+              if (!value) {
+                return 'Required'
+              } else if (!isEmail(value)) {
+                return 'Invalid email'
+              }
+            }}
+          >
             {({ input, meta }) => (
               <div>
                 <label htmlFor="email">Email</label>

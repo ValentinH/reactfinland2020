@@ -6,6 +6,14 @@ import gql from 'graphql-tag'
 import validate from './validate'
 import Link from 'next/link'
 
+const EDIT_BOOK = gql`
+  mutation($id: Int!, $book: UpdateBookInput!) {
+    updateBook(id: $id, Book: $book) {
+      success
+    }
+  }
+`
+
 export default function BookForm({ bookId }) {
   const { data } = useQuery(
     gql`
@@ -26,6 +34,7 @@ export default function BookForm({ bookId }) {
       },
     }
   )
+  const [updateBook] = useMutation(EDIT_BOOK)
   const book = data && data.book
   if (book) {
     // This is because Apollo adds these __typename keys onto each type of
@@ -48,7 +57,12 @@ export default function BookForm({ bookId }) {
           // need to convert it to a number.
           const adjustedValues = { ...values, year: Number(values.year) }
 
-          // await updateBook() call with adjustedValues
+          await updateBook({
+            variables: {
+              id: bookId,
+              book: adjustedValues,
+            },
+          }) //call with adjustedValues
 
           // Go back to list page...
           router.push('/14-saving-with-graphql')
@@ -60,13 +74,7 @@ export default function BookForm({ bookId }) {
           <form onSubmit={handleSubmit} className="bookForm">
             <div>
               <label htmlFor="title">Title</label>
-              <Field
-                component="input"
-                type="text"
-                id="title"
-                name="title"
-                placeholder="Title"
-              />
+              <Field component="input" type="text" id="title" name="title" placeholder="Title" />
               <Error name="title" />
             </div>
             <div>
@@ -93,13 +101,7 @@ export default function BookForm({ bookId }) {
             </div>
             <div>
               <label htmlFor="year">Year</label>
-              <Field
-                component="input"
-                type="text"
-                id="year"
-                name="year"
-                placeholder="Year"
-              />
+              <Field component="input" type="text" id="year" name="year" placeholder="Year" />
               <Error name="year" />
             </div>
             <button type="submit">Submit</button>
